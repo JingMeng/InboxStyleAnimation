@@ -1,15 +1,15 @@
 package net.huannguyen.inboxstyleanimation
 
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.ViewModelProviders
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import android.graphics.Rect
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.view.animation.FastOutSlowInInterpolator
-import android.support.v7.widget.DividerItemDecoration
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.NO_POSITION
+import androidx.fragment.app.Fragment
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import android.transition.ChangeBounds
 import android.transition.ChangeImageTransform
 import android.transition.ChangeTransform
@@ -22,8 +22,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.doOnPreDraw
-import kotlinx.android.synthetic.main.email_list.emailList
-import kotlinx.android.synthetic.main.email_list.progressBar
+import android.widget.ProgressBar
 import net.huannguyen.inboxstyleanimation.R.layout
 import net.huannguyen.inboxstyleanimation.State.InProgress
 import net.huannguyen.inboxstyleanimation.State.Success
@@ -34,6 +33,8 @@ private const val TRANSITION_DURATION = 300L
 private const val TAP_POSITION = "tap_position"
 
 class EmailListFragment : Fragment() {
+  private val emailList: RecyclerView get() = requireView().findViewById(R.id.emailList)
+  private val progressBar: ProgressBar get() = requireView().findViewById(R.id.progressBar)
   private var tapPosition = NO_POSITION
   val viewRect = Rect()
   private val emailAdapter = EmailAdapter()
@@ -60,7 +61,7 @@ class EmailListFragment : Fragment() {
 
     if (viewModel.emails.value == null) viewModel.getEmails()
 
-    viewModel.emails.observe(this,
+    viewModel.emails.observe(viewLifecycleOwner,
                              Observer<State> { state -> state?.let { render(state) } })
   }
 
